@@ -1,0 +1,21 @@
+server {
+	listen 5.1.92.251:80;
+	listen 5.1.92.251:443 http2 ssl;
+	listen [2a01:360:50e:1::251]:80;
+	listen [2a01:360:50e:1::251]:443 http2 ssl;
+
+	server_name upload.trashserver.net;
+
+	ssl_certificate /etc/acme.sh/trashserver.net/fullchain.pem;
+	ssl_certificate_key /etc/acme.sh/trashserver.net/privkey.pem;
+
+	client_max_body_size 100m;
+
+	## Pass connections to Prosody filer
+	location /upload/ {
+		proxy_pass http://localhost:5050/upload/;
+		proxy_request_buffering off;
+	}
+
+	include snippets/tls-common.conf;
+}
