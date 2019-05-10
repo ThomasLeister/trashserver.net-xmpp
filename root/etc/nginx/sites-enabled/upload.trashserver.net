@@ -11,10 +11,19 @@ server {
 
 	client_max_body_size 100m;
 
-	## Pass connections to Prosody filer
 	location /upload/ {
+		if ( $request_method = OPTIONS ) {
+			add_header Access-Control-Allow-Origin '*';
+                        add_header Access-Control-Allow-Methods 'PUT, GET, OPTIONS, HEAD';
+			add_header Access-Control-Allow-Headers 'Authorization, Content-Type';
+			add_header Access-Control-Allow-Credentials 'true';
+			add_header Content-Length 0;
+			add_header Content-Type text/plain;
+			return 200;
+                }
+
 		proxy_pass http://localhost:5050/upload/;
-		proxy_request_buffering off;
+		proxy_request_buffering off;		
 	}
 
 	include snippets/tls-common.conf;
