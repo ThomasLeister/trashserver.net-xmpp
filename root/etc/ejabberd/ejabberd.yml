@@ -110,7 +110,7 @@ listen:
     max_stanza_size: 524288
   -
     port: 5080
-    ip: "::1"
+    ip: "::"
     module: ejabberd_http
     request_handlers:
       ## "/api": mod_http_api
