@@ -318,9 +318,7 @@ modules:
         You can find find information and support at https://trashserver.net.
         If you have any questions regarding this server, feel free to send a message to the administrator via
         email (xmpp@trashserver.net) or XMPP (admin@trashserver.net).        
-  mod_register_web:
-    registration_watchers:
-      - "admin@trashserver.net"
+  mod_register_web: {}
   mod_roster:
     versioning: true
   mod_s2s_dialback: {}
