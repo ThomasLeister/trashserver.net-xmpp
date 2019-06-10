@@ -137,7 +137,7 @@ auth_password_format: scram
 
 ## Full path to a script that generates the image.
 captcha_cmd: "/usr/share/ejabberd/captcha.sh"
-captcha_host: "xmpp.trashserver.net"
+captcha_host: "https://xmpp.trashserver.net"
 captcha_limit: 10
 
 acl:
