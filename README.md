@@ -14,24 +14,7 @@ Repository with copies of my XMPP server configuration for public interest / inv
 
 ## OS and Ejabberd version
 
-I'm using Debian 9 Stretch as an OS. Ejabberd 18.12 was installed from the stretch-backports repo:
-
-```
-nano /etc/apt/sources.list
-```
-
-```
-# Stretch Backports
-deb http://ftp.debian.org/debian stretch-backports main
-```
-
-```
-apt update
-apt install -t stretch-backports ejabberd erlang-p1-pgsql
-apt install imagemagick
-```
-
-*Make sure you install ```erlang-p1-pgsql``` from the backport repo!*
+I'm using Debian 10 Buster as an OS. The latest official Ejabberd version was compiled from source: https://thomas-leister.de/en/install-ejabberd-from-source/
 
 
 ## TLS certificates and Diffie Hellman parameters
