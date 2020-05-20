@@ -101,7 +101,8 @@ listen:
     module: ejabberd_stun
     use_turn: true
     ## The server's public IPv4 address:
-    turn_ip: 5.1.92.251
+    turn_v4_ip: 5.1.92.251
+    turn_v6_ip: 2a01:360:50e:1::251
   -
     port: 3443
     transport: tcp
@@ -109,7 +110,8 @@ listen:
     module: ejabberd_stun
     use_turn: true
     ## The server's public IPv4 address:
-    turn_ip: 5.1.92.254
+    turn_v4_ip: 5.1.92.254
+    turn_v6_ip: 2a01:360:50e:1::254
 
 ## Disabling digest-md5 SASL authentication. digest-md5 requires plain-text
 ## password storage (see auth_password_format option).
