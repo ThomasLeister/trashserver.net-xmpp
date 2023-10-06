@@ -60,6 +60,27 @@ Nginx terminates TLS and provides nice URLs without any port notation. It listen
 
 Ejabberd is using [Prosody Filer](https://github.com/ThomasLeister/prosody-filer) for file upload processing.
 
+## "Dumb clients"
+
+My XMPP server for trashserver.net is hosted on another machine than the corresponding website. Therefore the A/AAAA Records of trashserver.net do not point to the XMPP server, but to the web server. Usually this is no problem, since XMPP servers and clients don't check the A records of a domain, but the XMPP SRV records. But some clients still seem to use A/AAA records for XMPP or at least use them as a fallback. So there are client that connect to trashserver.net (`5.1.72.132`) instead of xmpp.trashserver.net (`5.1.72.136`).
+
+This can be resolved by redirecting mislead XMPP clients from the web host to the XMPP host. The following iptables rules are added to the web host:
+
+```
+iptables -t nat -A PREROUTING -p tcp -m tcp --dport 5222 -j DNAT --to-destination 5.1.72.136:5222
+iptables -t nat -A PREROUTING -p tcp -m tcp --dport 5269 -j DNAT --to-destination 5.1.72.136:5269
+iptables -t nat -A POSTROUTING -d 5.1.72.136/32 -p tcp -m tcp --dport 5222 -j SNAT --to-source 5.1.72.132
+iptables -t nat -A POSTROUTING -d 5.1.72.136/32 -p tcp -m tcp --dport 5269 -j SNAT --to-source 5.1.72.132
+
+
+ip6tables -t nat -A PREROUTING -p tcp -m tcp --dport 5222 -j DNAT --to-destination [2a07:6fc0:508::136]:5222
+ip6tables -t nat -A PREROUTING -p tcp -m tcp --dport 5269 -j DNAT --to-destination [2a07:6fc0:508::136]:5269
+ip6tables -t nat -A POSTROUTING -d 2a07:6fc0:508::136/128 -p tcp -m tcp --dport 5222 -j SNAT --to-source 2a07:6fc0:508::132
+ip6tables -t nat -A POSTROUTING -d 2a07:6fc0:508::136/128 -p tcp -m tcp --dport 5269 -j SNAT --to-source 2a07:6fc0:508::132
+```
+
+It is advisable to save these rules via iptables-persistent.
+
 
 ## XMPP over TLS
 
@@ -67,19 +88,19 @@ Port 443 of a second IP address (just for that purpose) is forwarded to port 522
 
 | Origin address (sec)  | Origin port   | Destination address (prim)    | Destination port  |
 |-----------------------|---------------|-------------------------------|-------------------|
-| 2a01:360:50e:1::252   | 443           | 2a01:360:50e:1::251           | 5223              |
-| 5.1.92.252            | 443           | 5.1.92.251                    | 5223              |
+| 2a07:6fc0:508::137    | 443           | 2a07:6fc0:508::136            | 5223              |
+| 5.1.72.137            | 443           | 5.1.72.136                    | 5223              |
 
 IPv6:
 ```
-ip6tables -t nat -A PREROUTING -d 2a01:360:50e:1::252/128 -p tcp -m tcp --dport 443 -j DNAT --to-destination [2a01:360:50e:1::251]:5223
-ip6tables -t nat -A POSTROUTING -d 2a01:360:50e:1::252/128 -p tcp -m tcp --dport 5223 -j SNAT --to-source [2a01:360:50e:1::251]:5223
+ip6tables -t nat -A PREROUTING -d 2a07:6fc0:508::137/128 -p tcp -m tcp --dport 443 -j DNAT --to-destination [2a07:6fc0:508::136]:5223
+ip6tables -t nat -A POSTROUTING -d 2a07:6fc0:508::137/128 -p tcp -m tcp --dport 5223 -j SNAT --to-source [2a07:6fc0:508::136]:5223
 ```
 
 IPv4:
 ```
-iptables -t nat -A PREROUTING -d 5.1.92.252/32 -p tcp -m tcp --dport 443 -j DNAT --to-destination 5.1.92.251:5223
-iptables -t nat -A POSTROUTING -d 5.1.92.252/32 -p tcp -m tcp --dport 5223 -j SNAT --to-source 5.1.92.251:5223
+iptables -t nat -A PREROUTING -d 5.1.72.137/32 -p tcp -m tcp --dport 443 -j DNAT --to-destination 5.1.72.136:5223
+iptables -t nat -A POSTROUTING -d 5.1.72.137/32 -p tcp -m tcp --dport 5223 -j SNAT --to-source 5.1.72.136:5223
 ```
 
 I recommend [iptables-persistent](https://packages.debian.org/stretch/iptables-persistent) to save iptables: https://wiki.debian.org/iptables#Making_Changes_permanent
